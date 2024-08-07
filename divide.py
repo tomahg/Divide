@@ -3,14 +3,17 @@ import random
 import requests
 import sys
 
-if len(sys.argv) != 2:
-    print('Usage: python ' + sys.argv[0] + ' <minimum_group_size>')
+if len(sys.argv) != 3:
+    print('Usage: python ' + sys.argv[0] + ' <minimum_group_size> <maximumm_group_size>')
     sys.exit(1)
 
 try:
     minimum_group_size = int(sys.argv[1])
+    maximum_group_size = int(sys.argv[2])
+    group_size = random.randint(minimum_group_size, maximum_group_size)
+    print(f"Group size selected: {group_size}")
 except ValueError:
-    print("Error: minimum_group_size must be an integer.")
+    print("Error: minimum_group_size must be an integer. Also: maximum_group_size must be an integer.")
     sys.exit(1)
 
 URL = 'https://www.novacare.no/menneskene'
@@ -22,9 +25,9 @@ employees = [tag.text for tag in employee_tags]
 random.shuffle(employees)
 
 employee_count = len(employees)
-group_count = employee_count // minimum_group_size
-extra_persons = employee_count % minimum_group_size
-group_sizes = [minimum_group_size] * group_count
+group_count = employee_count // group_size
+extra_persons = employee_count % group_size
+group_sizes = [group_size] * group_count
 
 # Distribute extra persons
 for index in range(extra_persons):
