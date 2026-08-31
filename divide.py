@@ -17,8 +17,15 @@ URL = 'https://www.novacare.no/menneskene'
 
 response = requests.get(URL)
 soup = bs4.BeautifulSoup(response.text, 'html.parser')
-employee_tags = soup.find_all('h2', class_='employees__name')
-employees = [tag.text for tag in employee_tags]    
+employee_tags = soup.select('li h2')
+# The first and last name are separate nodes, so join them with a space
+employees = [tag.get_text(' ', strip=True) for tag in employee_tags]
+employees = [name for name in employees if name]
+
+if not employees:
+    print(f'Error: found no employees at {URL}. Has the page markup changed?')
+    sys.exit(1)
+
 random.shuffle(employees)
 
 employee_count = len(employees)
